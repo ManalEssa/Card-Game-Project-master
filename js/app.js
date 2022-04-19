@@ -24,22 +24,36 @@ shuffling();
 let timerOut=true;
 let timerId=0;
 let time=0;
+let cardCheck=[];
 
 
 //functions
-var allcards =document.querySelectorAll(".card");
-for (const element of allcards){
-    element.addEventListener("click",function(event){
-    event.target.classList.add("open");
+const matchCheck = () => {
+    if (
+        cardCheck[0].firstElementChild.className === cardCheck[1].firstElementChild.className
+        )
+    {
+        cardCheck[0].classList.add("match");
+        cardCheck[1].classList.add("match");
+        cardCheck=[];
 
-});
+    }else
+    {
+        setTimeout(() => {
+        cardCheck[0].classList.remove("open");
+        cardCheck[1].classList.remove("open");
+        
+        cardCheck=[];
+
+        }, 1000);
+         
+}
 }
 
 
 
 
-// event listeners
-
+//timer
 const timerclock = document.querySelector("#timer");
 const startClock =() =>{
     timerOut=false;
@@ -60,7 +74,29 @@ const startClock =() =>{
     
     }
     
-    deck.addEventListener("click",function(){
+    // event listeners
+    deck.addEventListener("click",function(event){
     if (timerOut){
     startClock();}
+    
+    //event.target.classList.add("open"); //show card
+      allCards(event.target);
+
+      if (cardCheck.length === 2){
+          matchCheck(event.target);
+      }
+    
     });
+ 
+
+//show cards
+const allCards = (myCard) =>{
+    myCard.classList.add("open");
+}
+
+
+
+
+
+
+
