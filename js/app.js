@@ -45,7 +45,7 @@ const matchCheck = () => {
 
             cardCheck = [];
 
-        }, 200);
+        }, 1000);
 
     }
 }
@@ -78,7 +78,7 @@ const heartFunctuin =() => {
         }
     }
     
-} else if (moveCount === 26)
+} else if (moveCount === 24)
 {
     alert(" Out of moves! Try again")
     stopClock();
