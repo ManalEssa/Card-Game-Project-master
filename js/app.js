@@ -11,92 +11,177 @@ function shuffle(array) {
 
     return array;
 }
-const shuffling =() =>{
-    const deck =document.querySelector("#deck");
-    const arr =Array.from(document.querySelectorAll(".card"));
+const shuffling = () => {
+    const deck = document.querySelector("#deck");
+    const arr = Array.from(document.querySelectorAll(".card"));
     const shuffled = shuffle(arr);
-    for (card of shuffled){
+    for (card of shuffled) {
         deck.appendChild(card);
     };
 };
 shuffling();
 // varible
-let timerOut=true;
-let timerId=0;
-let time=0;
-let cardCheck=[];
+let timerOut = true;
+let timerId = 0;
+let time = 0;
+let cardCheck = [];
+moveCount=0;
 
 
 //functions
+// to check if the cards are match or close it
 const matchCheck = () => {
     if (
         cardCheck[0].firstElementChild.className === cardCheck[1].firstElementChild.className
-        )
-    {
+    ) {
         cardCheck[0].classList.add("match");
         cardCheck[1].classList.add("match");
-        cardCheck=[];
+        cardCheck = [];
 
-    }else
-    {
+    } else {
         setTimeout(() => {
-        cardCheck[0].classList.remove("open");
-        cardCheck[1].classList.remove("open");
-        
-        cardCheck=[];
+            cardCheck[0].classList.remove("open");
+            cardCheck[1].classList.remove("open");
 
-        }, 1000);
-         
+            cardCheck = [];
+
+        }, 200);
+
+    }
+}
+//count the moves
+const moveFunction=()=>{
+    moveCount++;
+    const moves=document.querySelector("#moves");
+    console.log(`moves:${moveCount}`);
+    moves.innerHTML = moveCount;
+    
+}
+
+// moves restart
+const resetMoves=()=>{
+    moveCount=0;
+    const moves=document.querySelector("#moves");
+    moves.innerHTML = moveCount;
+    
+}
+
+// decrease hearts depend on moves
+const heartFunctuin =() => {
+    const Allheart=document.querySelectorAll("#heart li");
+    if (moveCount === 8 || moveCount === 16){
+        for(const heart of Allheart){
+          if( heart.style.display != "none"){
+            heart.style.display="none";
+            break;
+          
+        }
+    }
+    
+} else if (moveCount === 26)
+{
+    alert(" Out of moves! Try again")
+    stopClock();
+    timerOut=true;
+    time=0;
+    timerCount();
+
+    resetHeart();
+
+    resetMoves();
+
+    shuffling();
+
+    resetCards();
 }
 }
+// hearts restart
+const resetHeart=() => {
+    const Allheart=document.querySelectorAll("#heart li");
 
+    for (heart of Allheart){
+        heart.style.display="inline";
+    }
+}
 
+// cards restart
+const resetCards=() => {
+    const cards=document.querySelectorAll(".card");
+    for (const card of cards){
+        card.className="card";
+    }
+}
 
 
 //timer
 const timerclock = document.querySelector("#timer");
-const startClock =() =>{
-    timerOut=false;
+const startClock = () => {
+    timerOut = false;
     timerId = setInterval(() => {
         time++;
         timerCount();
     }, 1000);
+}
+const timerCount = () => {
+    const min = Math.floor(time / 60);
+    const sec = time % 60;
+    if (sec < 10) {
+        timerclock.innerHTML = `${min}:0${sec}`;
+    } else {
+        timerclock.innerHTML = `${min}:${sec}`;
+
     }
-    const timerCount =() =>{
-        const min = Math.floor(time / 60);
-        const sec = time % 60;
-        if (sec < 10){
-            timerclock.innerHTML=`${min}:0${sec}`;
-        }else{
-            timerclock.innerHTML=`${min}:${sec}`;
-    
+
+}
+const stopClock =() =>{
+    clearInterval(timerId);
+    }
+
+// event listeners
+
+// reset listener 
+
+const reset = document.querySelector("#restart");
+
+reset.addEventListener("click",function(){
+    //reset time
+    stopClock();
+    timerOut=true;
+    time=0;
+    timerCount();
+
+    resetHeart();
+
+    resetMoves();
+
+    shuffling();
+
+    resetCards();
+
+    }); 
+
+    //deck Listener
+
+deck.addEventListener("click", function (event) {
+        if (timerOut) {
+            startClock();
+        }
+
+        //event.target.classList.add("open"); //show card
+        allCards(event.target);
+        cardCheck.push(event.target);
+
+        if (cardCheck.length === 2) {
+            matchCheck();
+            moveFunction();
+            heartFunctuin();
         }
     
-    }
-    
-    // event listeners
-    deck.addEventListener("click",function(event){
-    if (timerOut){
-    startClock();}
-    
-    //event.target.classList.add("open"); //show card
-      allCards(event.target);
+});
 
-      if (cardCheck.length === 2){
-          matchCheck(event.target);
-      }
-    
-    });
- 
 
 //show cards
-const allCards = (myCard) =>{
+const allCards = (myCard) => {
     myCard.classList.add("open");
 }
-
-
-
-
-
-
 
