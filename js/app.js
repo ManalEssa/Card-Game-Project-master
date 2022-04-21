@@ -26,6 +26,7 @@ let timerId = 0;
 let time = 0;
 let cardCheck = [];
 moveCount=0;
+openMatch=0;
 
 
 //functions
@@ -37,7 +38,8 @@ const matchCheck = () => {
         cardCheck[0].classList.add("match");
         cardCheck[1].classList.add("match");
         cardCheck = [];
-
+        console.log(openMatch++);
+        winGame();
     } else {
         setTimeout(() => {
             cardCheck[0].classList.remove("open");
@@ -46,6 +48,13 @@ const matchCheck = () => {
             cardCheck = [];
 
         }, 1000);
+
+    }
+}
+//win condition
+const winGame = () =>{
+    if (openMatch === 8){
+    stopClock();
 
     }
 }
@@ -81,18 +90,7 @@ const heartFunctuin =() => {
 } else if (moveCount === 24)
 {
     alert(" Out of moves! Try again")
-    stopClock();
-    timerOut=true;
-    time=0;
-    timerCount();
-
-    resetHeart();
-
-    resetMoves();
-
-    shuffling();
-
-    resetCards();
+   restartGame();
 }
 }
 // hearts restart
@@ -110,6 +108,22 @@ const resetCards=() => {
     for (const card of cards){
         card.className="card";
     }
+}
+const restartGame =() =>{
+    stopClock();
+    timerOut=true;
+    time=0;
+    timerCount();
+
+    resetHeart();
+
+    resetMoves();
+
+    shuffling();
+
+    resetCards();
+
+    cardCheck=[];
 }
 
 
@@ -145,24 +159,15 @@ const reset = document.querySelector("#restart");
 
 reset.addEventListener("click",function(){
     //reset time
-    stopClock();
-    timerOut=true;
-    time=0;
-    timerCount();
-
-    resetHeart();
-
-    resetMoves();
-
-    shuffling();
-
-    resetCards();
+    restartGame();
 
     }); 
 
     //deck Listener
 
 deck.addEventListener("click", function (event) {
+    const targrtEv=event.target;
+    if(checkClick(event.target)){
         if (timerOut) {
             startClock();
         }
@@ -175,13 +180,24 @@ deck.addEventListener("click", function (event) {
             matchCheck();
             moveFunction();
             heartFunctuin();
+
         }
-    
+    }
 });
 
 
 //show cards
 const allCards = (myCard) => {
     myCard.classList.add("open");
+}
+//here to check the clicks of the user
+const checkClick = (targrtEv) => {
+return (
+    cardCheck.length < 2  && //more than 2 cards will not accepet
+    targrtEv.classList.contains("card") && // will not accept it if the user click in same one card
+    !targrtEv.classList.contains("match") // will not accept it if the user click in openned match card
+
+    
+);
 }
 
